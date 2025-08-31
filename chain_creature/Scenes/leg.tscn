@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://drbletyr1rr6t"]
+
+[ext_resource type="Script" uid="uid://btl1cvv2w4x48" path="res://Scripts/leg.gd" id="1_85l3v"]
+
+[node name="Leg" type="Node2D"]
+script = ExtResource("1_85l3v")

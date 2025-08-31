@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqkv1adr1yqmq"]
+
+[ext_resource type="Script" uid="uid://ca8qn2cq3th1l" path="res://Scripts/food.gd" id="1_fhto3"]
+[ext_resource type="Texture2D" uid="uid://b75w0w6dvgunf" path="res://AssetBundle/Sprites/Bullet.png" id="1_j4qko"]
+
+[node name="Food" type="Node2D"]
+script = ExtResource("1_fhto3")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_j4qko")

@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://fge8nsy6ylkq"]
+
+[ext_resource type="Script" uid="uid://ls6wf721yw0p" path="res://Scripts/state.gd" id="1_epifs"]
+[ext_resource type="Script" uid="uid://c4xyfwqt3ae1q" path="res://Scripts/wander_state.gd" id="2_o1fcj"]
+[ext_resource type="Script" uid="uid://3j30wi6rdtqf" path="res://Scripts/food_state.gd" id="3_hvect"]
+[ext_resource type="Script" uid="uid://cxry67glm80nf" path="res://Scripts/flee_state.gd" id="4_ijpbt"]
+
+[node name="State" type="Node2D"]
+script = ExtResource("1_epifs")
+
+[node name="Wander_State" type="Node2D" parent="."]
+script = ExtResource("2_o1fcj")
+
+[node name="Food_State" type="Node2D" parent="."]
+script = ExtResource("3_hvect")
+
+[node name="Flee_State" type="Node2D" parent="."]
+script = ExtResource("4_ijpbt")
