@@ -1,0 +1,222 @@
+[gd_scene load_steps=21 format=3 uid="uid://das1eoq15stsh"]
+
+[ext_resource type="Script" uid="uid://daxsae6362ym5" path="res://Scripts/game.gd" id="1_qxrlw"]
+[ext_resource type="PackedScene" uid="uid://bkcbhuwwks0rn" path="res://Scenes/back_ground.tscn" id="2_3dryh"]
+[ext_resource type="PackedScene" uid="uid://cor1co02k3iny" path="res://Scenes/obstacle.tscn" id="2_wrm1d"]
+[ext_resource type="PackedScene" uid="uid://q157t1kj5ydy" path="res://Scenes/player.tscn" id="3_wrm1d"]
+[ext_resource type="FontFile" uid="uid://c8lk5hjd5bx82" path="res://AssetBundle/Uranus_Pixel_11Px.ttf" id="5_wowpa"]
+[ext_resource type="AudioStream" uid="uid://sy34pln0tgf5" path="res://AssetBundle/Audio/GameOver.mp3" id="7_v158k"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wowpa"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_i6g32"]
+offsets = PackedFloat32Array(0, 0.00649351)
+colors = PackedColorArray(0.197794, 0.263249, 0.830933, 1, 0.957324, 0.793278, 0.88684, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1l0tm"]
+gradient = SubResource("Gradient_i6g32")
+width = 1
+fill_to = Vector2(0, 0.995413)
+
+[sub_resource type="Curve" id="Curve_v158k"]
+_data = [Vector2(0, 0.0786518), 0.0, 0.0, 0, 0, Vector2(0.183824, 0.696629), 0.88159, 0.88159, 0, 0, Vector2(0.992647, 0.988764), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_h4fw4"]
+curve = SubResource("Curve_v158k")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ldgsr"]
+lifetime_randomness = 0.2
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(150, 1, 1)
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+alpha_curve = SubResource("CurveTexture_h4fw4")
+sub_emitter_mode = 2
+sub_emitter_amount_at_end = 32
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_o5yvi"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_rku1e"]
+colors = PackedColorArray(0.956863, 0.117647, 0.47451, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rfjv2"]
+gradient = SubResource("Gradient_rku1e")
+width = 1
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Curve" id="Curve_1phco"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.777429, 0.722362), -1.18405, -1.18405, 0, 0, Vector2(0.996865, 0.0609297), -5.12297, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_nb51f"]
+curve = SubResource("Curve_1phco")
+
+[sub_resource type="Gradient" id="Gradient_nnt18"]
+offsets = PackedFloat32Array(0, 0.163823, 0.354949, 0.559727, 1)
+colors = PackedColorArray(0.639216, 0.87451, 0.192157, 1, 0.980392, 0.117647, 0.270588, 1, 0.0431373, 0.905882, 0.247059, 1, 0.0313726, 0.835294, 0.988235, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ewbju"]
+gradient = SubResource("Gradient_nnt18")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_85qyi"]
+lifetime_randomness = 1.0
+particle_flag_disable_z = true
+direction = Vector3(1, 1, 0)
+spread = 180.0
+initial_velocity_min = 50.0
+initial_velocity_max = 150.0
+gravity = Vector3(0, 98, 0)
+damping_max = 100.0
+scale_min = 0.5
+color_initial_ramp = SubResource("GradientTexture1D_ewbju")
+alpha_curve = SubResource("CurveTexture_nb51f")
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("score_timer", "score_label", "game_label", "start_label", "game_over_label", "signature_label", "high_score_label")]
+script = ExtResource("1_qxrlw")
+score_timer = NodePath("ScoreTimer")
+score_label = NodePath("CanvasLayer/ScoreLabel")
+game_label = NodePath("CanvasLayer/GameLabel")
+start_label = NodePath("CanvasLayer/GameLabel/StartLabel")
+game_over_label = NodePath("CanvasLayer/GameOverLabel")
+signature_label = NodePath("CanvasLayer/GameOverLabel/SignatureLabel")
+high_score_label = NodePath("CanvasLayer/GameOverLabel/HighScoreLabel")
+
+[node name="BackGround" parent="." instance=ExtResource("2_3dryh")]
+metadata/_edit_lock_ = true
+
+[node name="Obstacle" parent="." instance=ExtResource("2_wrm1d")]
+position = Vector2(199, 167)
+
+[node name="Obstacle2" parent="." instance=ExtResource("2_wrm1d")]
+position = Vector2(629, 773)
+
+[node name="Obstacle3" parent="." instance=ExtResource("2_wrm1d")]
+position = Vector2(1399, 399)
+
+[node name="Player" parent="." instance=ExtResource("3_wrm1d")]
+position = Vector2(885, 527)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer"]
+offset_left = 60.0
+offset_top = 41.0
+offset_right = 279.0
+offset_bottom = 106.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 64
+text = "Score : 0"
+
+[node name="GameOverLabel" type="Label" parent="CanvasLayer"]
+visible = false
+offset_left = 481.0
+offset_top = 158.0
+offset_right = 1093.0
+offset_bottom = 287.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 128
+text = "Game Over!"
+
+[node name="SignatureLabel" type="Label" parent="CanvasLayer/GameOverLabel"]
+layout_mode = 0
+offset_left = 554.0
+offset_top = 517.0
+offset_right = 1112.0
+offset_bottom = 690.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 64
+text = "Press f8 to Exit
+Game by Axin :)"
+
+[node name="RestartButton" type="Button" parent="CanvasLayer/GameOverLabel"]
+layout_mode = 0
+offset_left = 181.0
+offset_top = 396.0
+offset_right = 441.0
+offset_bottom = 503.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 80
+text = "Restart"
+
+[node name="HighScoreLabel" type="Label" parent="CanvasLayer/GameOverLabel"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 131.0
+offset_right = 514.0
+offset_bottom = 244.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 64
+text = "Highest Score : 0"
+
+[node name="FireworkUp" type="GPUParticles2D" parent="CanvasLayer/GameOverLabel"]
+material = SubResource("CanvasItemMaterial_wowpa")
+position = Vector2(350, 442)
+scale = Vector2(2.56, 2.56)
+amount = 5
+sub_emitter = NodePath("../FireworkBlast")
+texture = SubResource("GradientTexture2D_1l0tm")
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_ldgsr")
+
+[node name="FireworkBlast" type="GPUParticles2D" parent="CanvasLayer/GameOverLabel"]
+material = SubResource("CanvasItemMaterial_o5yvi")
+position = Vector2(325, 185)
+scale = Vector2(2.89, 2.89)
+amount = 1000
+texture = SubResource("GradientTexture2D_rfjv2")
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_85qyi")
+
+[node name="GameLabel" type="Label" parent="CanvasLayer"]
+offset_left = 124.0
+offset_top = 103.0
+offset_right = 1462.0
+offset_bottom = 223.0
+theme_override_colors/font_outline_color = Color(0, 0.407843, 0.843137, 1)
+theme_override_constants/outline_size = 50
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 120
+text = "THE YOUNG FISH
+AND THE SEA"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="CanvasLayer/GameLabel"]
+layout_mode = 0
+offset_left = 530.0
+offset_top = 427.0
+offset_right = 757.0
+offset_bottom = 519.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 80
+text = "Start"
+
+[node name="StartLabel" type="Label" parent="CanvasLayer/GameLabel"]
+layout_mode = 0
+offset_left = 870.0
+offset_top = 445.0
+offset_right = 1350.0
+offset_bottom = 682.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 56
+text = "Dodge Bigger Fish
+Press WASD to Move
+Press Space to Dash
+Press F8 to Exit"
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="GameOverSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_v158k")
+volume_db = 5.0
+
+[connection signal="pressed" from="CanvasLayer/GameOverLabel/RestartButton" to="." method="_restart_game"]
+[connection signal="pressed" from="CanvasLayer/GameLabel/StartButton" to="." method="_game_start"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_score_increase"]

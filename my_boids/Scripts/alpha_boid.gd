@@ -1,0 +1,28 @@
+extends Boid
+class_name AlphaBoid
+
+
+
+
+
+func _ready() -> void:
+	add_to_group("Alpha")
+	max_speed = 150
+	perception_radius = 70
+	separation_limit =70
+	prey_limit = 130
+	separation_weight = 5.0
+	
+	
+	velocity = Vector2(randf() * max_speed, randf() * max_speed)
+	rotation = velocity.angle()
+	space_state = get_world_2d().direct_space_state
+	
+	var tween = create_tween().set_loops()
+	tween.tween_property(self, "scale", Vector2(1.1, 1.1), 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(self, "scale", Vector2(1, 1), 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+
+func _process(delta: float) -> void:
+	pass

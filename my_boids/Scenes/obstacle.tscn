@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cor1co02k3iny"]
+
+[ext_resource type="Texture2D" uid="uid://dlmk1jt0pauag" path="res://shapes.png" id="1_sl1jc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_aubd6"]
+radius = 63.0317
+
+[node name="Obstacle" type="StaticBody2D"]
+position = Vector2(187, 96)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_aubd6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.01, 0.01, 0.01, 1)
+texture = ExtResource("1_sl1jc")
+region_enabled = true
+region_rect = Rect2(389, 645, 118, 118)

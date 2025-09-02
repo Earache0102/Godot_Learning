@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://ur0eq3s7yjb7"]
+
+[ext_resource type="Script" uid="uid://bef3s6la485yd" path="res://Scripts/alpha_boid.gd" id="1_t332q"]
+[ext_resource type="Texture2D" uid="uid://dlmk1jt0pauag" path="res://shapes.png" id="2_muwy3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_of1mp"]
+atlas = ExtResource("2_muwy3")
+region = Rect2(384, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sfow6"]
+atlas = ExtResource("2_muwy3")
+region = Rect2(128, 384, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l5mnn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_of1mp")
+}],
+"loop": true,
+"name": &"chase",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sfow6")
+}],
+"loop": true,
+"name": &"wander",
+"speed": 5.0
+}]
+
+[node name="Alpha_Boid" type="Node2D"]
+script = ExtResource("1_t332q")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 0.304, 0.13, 1)
+scale = Vector2(0.7, 0.7)
+sprite_frames = SubResource("SpriteFrames_l5mnn")
+animation = &"wander"
+frame_progress = 0.400143
