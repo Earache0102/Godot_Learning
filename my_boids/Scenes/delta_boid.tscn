@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://jb4pa4ixscia"]
+
+[ext_resource type="Script" uid="uid://b6vqirhhpitmj" path="res://Scripts/delta_boid.gd" id="1_c8plr"]
+[ext_resource type="Texture2D" uid="uid://dlmk1jt0pauag" path="res://shapes.png" id="2_1gyfv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c8plr"]
+atlas = ExtResource("2_1gyfv")
+region = Rect2(256, 1024, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1pvjc"]
+atlas = ExtResource("2_1gyfv")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cskeh"]
+atlas = ExtResource("2_1gyfv")
+region = Rect2(128, 384, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_s1dur"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c8plr")
+}],
+"loop": true,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1pvjc")
+}],
+"loop": true,
+"name": &"flee",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cskeh")
+}],
+"loop": true,
+"name": &"wander",
+"speed": 5.0
+}]
+
+[node name="Delta_Boid" type="Node2D"]
+script = ExtResource("1_c8plr")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+modulate = Color(0.792157, 1, 0.25098, 1)
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_s1dur")
+animation = &"die"
+
+[node name="JumpTimer" type="Timer" parent="."]
+
+[node name="CooldownTimer" type="Timer" parent="."]

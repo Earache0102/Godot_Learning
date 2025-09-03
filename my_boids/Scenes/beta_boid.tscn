@@ -46,7 +46,8 @@ animations = [{
 script = ExtResource("1_epjo2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-modulate = Color(0.266667, 1, 1, 1)
-scale = Vector2(0.3, 0.3)
+modulate = Color(0.623529, 1, 1, 1)
+position = Vector2(0, 4.76837e-07)
+scale = Vector2(0.189063, 0.196875)
 sprite_frames = SubResource("SpriteFrames_vf2xq")
-animation = &"B_chase"
+animation = &"wander"

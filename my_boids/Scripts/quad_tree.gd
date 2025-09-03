@@ -90,8 +90,9 @@ func query(query_range: Rect2, found_objs: Array):
 		return
 
 	for obj in objs:
-		if query_range.has_point(obj.position):
-			found_objs.append(obj)
+		if is_instance_valid(obj):
+			if query_range.has_point(obj.position):
+				found_objs.append(obj)
 
 	if divided:
 		northeast.query(query_range, found_objs)
@@ -108,10 +109,11 @@ func merge():
 	if northeast.divided or northwest.divided or southeast.divided or southwest.divided:
 		return
 		
+	# 检查合并后管理对象数不超过总容量
 	if northeast.objs.size() + northwest.objs.size() + southeast.objs.size() + southwest.objs.size() + objs.size() > capacity:
 		return
 	
-	# 合并子节点中的点到当前节点
+	# 合并子节点管理的对象到当前节点
 	objs += northeast.objs
 	objs += northwest.objs
 	objs += southeast.objs

@@ -1,8 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://q157t1kj5ydy"]
+[gd_scene load_steps=10 format=3 uid="uid://q157t1kj5ydy"]
 
 [ext_resource type="Script" uid="uid://4ij1r0uen734" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://dlmk1jt0pauag" path="res://shapes.png" id="1_v0iea"]
-[ext_resource type="Script" uid="uid://c02ela2e7hneo" path="res://Scripts/follow_camera.gd" id="3_6t5aa"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6t5aa"]
 atlas = ExtResource("1_v0iea")
@@ -65,24 +64,18 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vgqql"]
 size = Vector2(18, 7)
 
-[node name="Player" type="Area2D" node_paths=PackedStringArray("score_label", "score_timer")]
+[node name="Player" type="Area2D" node_paths=PackedStringArray("score_timer") groups=["Player"]]
 script = ExtResource("1_cvnsp")
-score_label = NodePath("")
 score_timer = NodePath("ScoreTimer")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-modulate = Color(0.07, 0.132, 1, 1)
+modulate = Color(0.0705882, 0.313726, 1, 1)
 position = Vector2(1.90735e-06, 0)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_6t5aa")
-animation = &"Idle"
-frame_progress = 0.174034
+animation = &"Dash"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_vgqql")
-
-[node name="FollowCamera" type="Camera2D" parent="."]
-zoom = Vector2(1.9, 1.9)
-script = ExtResource("3_6t5aa")
 
 [node name="ScoreTimer" type="Timer" parent="."]

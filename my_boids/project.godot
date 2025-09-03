@@ -28,7 +28,8 @@ window/size/viewport_height=900
 
 Alpha=""
 Beta=""
-C=""
+Delta=""
+Player=""
 
 [input]
 

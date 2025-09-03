@@ -12,25 +12,42 @@ var trace_target: Vector2
 var perception_radius = 50 #同种群内的影响半径
 var separation_limit = 40 #分离的影响半径
 var prey_limit = 100 #关于天敌与猎物的影响半径，作为四叉树查询半径
+var D_boid_die_distance = 25
 
 var separation_weight = 1.2 
-var alignment_weight = 0.9
-var cohesion_weight = 0.9
+var alignment_weight = 1.0
+var cohesion_weight = 1.0
 var trace_weight = 0.0 #追逐目标点
 var avoid_weight = 20 #避障
-var prey_weight = 2.0 #追逐猎物
-var flee_weight = 5.0 #躲避天敌
+var prey_weight = 1.0 #追逐猎物
+var flee_weight = 2.5 #躲避天敌
 
 var space_state: PhysicsDirectSpaceState2D  #用于避障，实现RayCast2D的功能
 
+var all_groups = ["Alpha","Beta","Player","Delta"]
+
+signal D_boid_die(emitter) #D boid死亡信号，参数为信号发出者，传递self
+signal player_caught_D_boid() #玩家抓住D Boid的信号
+
+
 # 剔除以下划线开头的Godot内部分组，返回此boid的ABC分组
 func get_this_group():
-	var non_internal_groups = []
+	var non_internal_group :String
 	for group in get_groups():
 		if not str(group).begins_with("_"):
-			non_internal_groups.push_back(group)
+			non_internal_group = group
+			break
 	#测试代码 print(get_this_group()[0])
-	return non_internal_groups[0]
+	return non_internal_group
+	
+func get_group_index():
+	var index = 0
+	for group in all_groups:
+		if group == get_this_group():
+			index = all_groups.find(group)
+			break
+	return index
+	
 
 func _ready() -> void:
 	velocity = Vector2(randf() * max_speed, randf() * max_speed)
@@ -46,7 +63,7 @@ func steer_towards(sum: Vector2):
 	var steer = sum.normalized() * max_speed - velocity
 	return steer.limit_length(max_force)
 	
-#对齐：附近个体的平均速度
+#对齐：附近个体的平均速度，只看同种群
 func _align(neighbors):
 	var sum = Vector2.ZERO
 	var count = 0
@@ -63,7 +80,7 @@ func _align(neighbors):
 	
 	return sum
 	
-#聚集：附近个体的平均位置
+#聚集：附近个体的平均位置，只看同种群
 func _cohere(neighbors):
 	var sum = Vector2.ZERO
 	var count = 0
@@ -80,7 +97,7 @@ func _cohere(neighbors):
 	
 	return sum
 	
-#分离：远离附近个体
+#分离：远离附近个体，只看同种群
 func _separate(neighbors):
 	var sum = Vector2.ZERO
 	var count = 0
@@ -99,12 +116,14 @@ func _separate(neighbors):
 	
 	return sum
 
-func _trace(): #追逐target
+#追逐target
+func _trace(): 
 	if trace_target == null:
 		return Vector2.ZERO
 	return steer_towards(trace_target - position)	
 
-func _avoid():  #避障
+#避障
+func _avoid():  
 	
 	var steer = Vector2.ZERO
 	var query = PhysicsRayQueryParameters2D.create(global_position, global_position + velocity.normalized() * 150)
@@ -121,11 +140,13 @@ func _avoid():  #避障
 func _prey(neighbors):
 	var sum = Vector2.ZERO
 	var count = 0
+	var that_is_my_prey = false
 	for other in neighbors:
-		if other == self or other.is_in_group(get_this_group()) or other.is_in_group("Alpha"):
+		that_is_my_prey = other.get_group_index() > self.get_group_index()
+		if other == self or not that_is_my_prey:
 			continue
+			
 		var distance = position.distance_to(other.position)
-		
 		#dot内积，内积大于0说明猎物在前方
 		if distance > 0 and distance < prey_limit and (other.position - position).dot(velocity) > 0: 
 			var diff = (other.position - position).normalized() #减的方向反过来，从分离改成靠近
@@ -142,8 +163,10 @@ func _prey(neighbors):
 func _flee(neighbors):
 	var sum = Vector2.ZERO
 	var count = 0
+	var that_is_my_predator = false
 	for other in neighbors:
-		if other == self or not other.is_in_group("Alpha"): #目前只对Alpha有逃跑效果
+		that_is_my_predator = other.get_group_index() < self.get_group_index()
+		if other == self or not that_is_my_predator: #目前只对Alpha有逃跑效果
 			continue
 		var distance = position.distance_to(other.position)
 		
@@ -158,7 +181,8 @@ func _flee(neighbors):
 		
 	return sum
 
-func _calc_avoid_steer():  #以当前速度方向为中心，反复左右偏移，return射线不碰撞障碍物的方向
+#以当前速度方向为中心，反复左右偏移，return射线不碰撞障碍物的方向
+func _calc_avoid_steer():  
 	var current_direction = velocity.normalized()
 	var best_direction = current_direction
 	var found = false
@@ -181,48 +205,74 @@ func _calc_avoid_steer():  #以当前速度方向为中心，反复左右偏移�
 	else:
 		return current_direction
 	
+#汇总所有方法
 func apply_behaviors(delta: float, quadtree: QuadTree):
 	var nearby_boids = []
 	var nearby_range = Rect2(position - Vector2(prey_limit, prey_limit), Vector2(prey_limit * 2, prey_limit * 2))
 	quadtree.query(nearby_range, nearby_boids)
 	
+	#各个方法对加速度的贡献
 	var separation = _separate(nearby_boids) * separation_weight
 	var alignment = _align(nearby_boids) * alignment_weight
 	var cohesion = _cohere(nearby_boids) * cohesion_weight
 	var trace = _trace() * trace_weight
 	var avoid = _avoid() * avoid_weight
 	var prey = _prey(nearby_boids) * prey_weight
+	var flee = _flee(nearby_boids) * flee_weight
 	
-	var accelaration = separation + alignment + cohesion + trace + avoid + prey
+	var accelaration = separation + alignment + cohesion + trace + avoid + prey + flee
 		
 	
 	if is_in_group("Alpha"):
 		if prey !=  Vector2.ZERO:
-			max_speed = 150
+			max_speed = 130
 			$AnimatedSprite2D.play("chase")
 		else:
-			max_speed = 100
+			max_speed = 90
 			$AnimatedSprite2D.play("wander")
 		
-	#Beta种群有逃离天敌功能
 	if is_in_group("Beta"):
-		var flee = _flee(nearby_boids) * flee_weight
 		if flee != Vector2.ZERO:
-			max_speed = 275
+			max_speed = 170
 			$AnimatedSprite2D.play("flee")
 		elif prey != Vector2.ZERO:
-			max_speed = 200
+			max_speed = 170
 			$AnimatedSprite2D.play("B_chase")
 		else:
-			max_speed = 150
+			max_speed = 120
 			$AnimatedSprite2D.play("wander")
-		accelaration += flee
+		
+	if is_in_group("Delta"):
+		#首先判断死没死
+		var is_dead = false
+		for other in nearby_boids:
+			if other.get_group_index() < 3:  #是玩家或更大的鱼
+				if self.position.distance_to(other.position) < D_boid_die_distance:
+					if other.get_group_index() == 2:  #当且仅当是玩家抓的，才发信号
+						player_caught_D_boid.emit()
+					
+					is_dead = true
+					D_boid_die.emit(self)
+					quadtree.remove(self)
+					$AnimatedSprite2D.play("die")
+					await get_tree().create_timer(0.1).timeout
+					queue_free()
+					break
+					
+		if not is_dead:
+			if flee != Vector2.ZERO:
+				max_speed = 170
+				$AnimatedSprite2D.play("flee")
+			else:
+				max_speed = 150
+				$AnimatedSprite2D.play("wander")
+			accelaration -= avoid #Delta种群不用避障
 		
 	velocity += accelaration
 	velocity = velocity.limit_length(max_speed)
 	position += velocity * delta
 	if velocity.length() > 0:
-		rotation = lerp_angle(rotation, velocity.angle(), PI/2*delta)
+		rotation = lerp_angle(rotation, velocity.angle(), PI*delta)
 	
 	wrap_screen()
 	quadtree.remove(self)

@@ -3,10 +3,10 @@
 [ext_resource type="Texture2D" uid="uid://dlmk1jt0pauag" path="res://shapes.png" id="1_pcird"]
 
 [node name="BackGround" type="Node2D"]
-position = Vector2(6, 3)
+position = Vector2(6, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.6035, 0.71, 0.71, 0.945098)
+modulate = Color(0.360784, 0.745098, 0.941176, 0.945098)
 light_mask = 512
 visibility_layer = 512
 position = Vector2(792, 450)

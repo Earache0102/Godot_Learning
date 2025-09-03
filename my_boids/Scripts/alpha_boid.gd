@@ -7,7 +7,6 @@ class_name AlphaBoid
 
 func _ready() -> void:
 	add_to_group("Alpha")
-	max_speed = 150
 	perception_radius = 70
 	separation_limit =70
 	prey_limit = 130

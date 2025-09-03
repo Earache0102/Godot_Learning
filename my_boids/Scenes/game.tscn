@@ -78,10 +78,13 @@ scale_min = 0.5
 color_initial_ramp = SubResource("GradientTexture1D_ewbju")
 alpha_curve = SubResource("CurveTexture_nb51f")
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("score_timer", "score_label", "game_label", "start_label", "game_over_label", "signature_label", "high_score_label")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("score_timer", "D_boid_timer", "time_label", "score_label", "score_increas_label", "game_label", "start_label", "game_over_label", "signature_label", "high_score_label")]
 script = ExtResource("1_qxrlw")
 score_timer = NodePath("ScoreTimer")
+D_boid_timer = NodePath("DboidSpawnTimer")
+time_label = NodePath("CanvasLayer/TimeLabel")
 score_label = NodePath("CanvasLayer/ScoreLabel")
+score_increas_label = NodePath("CanvasLayer/ScoreIncreaseLabel")
 game_label = NodePath("CanvasLayer/GameLabel")
 start_label = NodePath("CanvasLayer/GameLabel/StartLabel")
 game_over_label = NodePath("CanvasLayer/GameOverLabel")
@@ -105,14 +108,35 @@ position = Vector2(885, 527)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="TimeLabel" type="Label" parent="CanvasLayer"]
+offset_left = 52.0
+offset_top = 35.0
+offset_right = 271.0
+offset_bottom = 108.0
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 64
+text = "Time : 0"
+
 [node name="ScoreLabel" type="Label" parent="CanvasLayer"]
-offset_left = 60.0
-offset_top = 41.0
-offset_right = 279.0
-offset_bottom = 106.0
+offset_left = 55.0
+offset_top = 116.0
+offset_right = 274.0
+offset_bottom = 181.0
 theme_override_fonts/font = ExtResource("5_wowpa")
 theme_override_font_sizes/font_size = 64
 text = "Score : 0"
+
+[node name="ScoreIncreaseLabel" type="Label" parent="CanvasLayer"]
+visible = false
+offset_left = 234.0
+offset_top = 174.0
+offset_right = 307.0
+offset_bottom = 239.0
+theme_override_colors/font_outline_color = Color(0.180392, 0.341176, 0.858824, 1)
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = ExtResource("5_wowpa")
+theme_override_font_sizes/font_size = 64
+text = "+1"
 
 [node name="GameOverLabel" type="Label" parent="CanvasLayer"]
 visible = false
@@ -217,6 +241,9 @@ Press F8 to Exit"
 stream = ExtResource("7_v158k")
 volume_db = 5.0
 
+[node name="DboidSpawnTimer" type="Timer" parent="."]
+
 [connection signal="pressed" from="CanvasLayer/GameOverLabel/RestartButton" to="." method="_restart_game"]
 [connection signal="pressed" from="CanvasLayer/GameLabel/StartButton" to="." method="_game_start"]
-[connection signal="timeout" from="ScoreTimer" to="." method="_score_increase"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_time_increase"]
+[connection signal="timeout" from="DboidSpawnTimer" to="." method="_on_dboid_spawn_timer_timeout"]
